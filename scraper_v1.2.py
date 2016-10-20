@@ -128,7 +128,7 @@ def get_data(driver, URL, startPage, endPage, data, refresh):
 		data = parse_reviews_HTML(reviews, data)
 		print ("Page " + str(startPage) + " scraped.")
 		if (startPage % 10 == 0):
-			print "\nTaking a breather for a few seconds ..."
+			print ("\nTaking a breather for a few seconds ...")
 			time.sleep(10)
 		#endif
 		get_data(driver, URL, startPage + 1, endPage, data, True)
