@@ -1,5 +1,7 @@
 # glassdoor-interview-scraper
 
+Forked from Williamxie11 [scrapper](https://github.com/williamxie11/glassdoor-interview-scraper)
+
 Current Version: 1.2
 
 Glassdoor web crawler and scraper providing interview experience data for [Decoding The Interview](https://github.com/williamxie11/decoding-the-interview).

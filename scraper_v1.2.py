@@ -2,6 +2,7 @@ import time
 import json
 import Review
 from bs4 import BeautifulSoup
+import configparser
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,8 +10,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
-username = "example@email.com" # your email here
-password = "password" # your password here
+config = configparser.ConfigParser()
+config.read('secrets.ini')
+
+username = config.get('Glassdoor', 'email') 
+password = config.get('Glassdoor', 'password')
 
 # Manual options for the company, num pages to scrape, and URL
 pages = 10
@@ -108,13 +112,13 @@ def get_data(driver, URL, startPage, endPage, data, refresh):
 	if (startPage > endPage):
 		return data
 	#endif
-	print "\nPage " + str(startPage) + " of " + str(endPage)
+	print ("\nPage " + str(startPage) + " of " + str(endPage))
 	currentURL = URL + "_IP" + str(startPage) + ".htm"
 	time.sleep(2)
 	#endif
 	if (refresh):
 		driver.get(currentURL)
-		print "Getting " + currentURL
+		print ("Getting " + currentURL)
 	#endif
 	time.sleep(2)
 	HTML = driver.page_source
@@ -122,14 +126,14 @@ def get_data(driver, URL, startPage, endPage, data, refresh):
 	reviews = soup.find_all("li", { "class" : ["empReview", "padVert"] })
 	if (reviews):
 		data = parse_reviews_HTML(reviews, data)
-		print "Page " + str(startPage) + " scraped."
+		print ("Page " + str(startPage) + " scraped.")
 		if (startPage % 10 == 0):
 			print "\nTaking a breather for a few seconds ..."
 			time.sleep(10)
 		#endif
 		get_data(driver, URL, startPage + 1, endPage, data, True)
 	else:
-		print "Waiting ... page still loading or CAPTCHA input required"
+		print ("Waiting ... page still loading or CAPTCHA input required")
 		time.sleep(3)
 		get_data(driver, URL, startPage, endPage, data, False)
 	#endif
@@ -139,12 +143,12 @@ def get_data(driver, URL, startPage, endPage, data, refresh):
 if __name__ == "__main__":
 	driver = init_driver()
 	time.sleep(3)
-	print "Logging into Glassdoor account ..."
+	print ("Logging into Glassdoor account ...")
 	login(driver, username, password)
 	time.sleep(5)
-	print "\nStarting data scraping ..."
+	print ("\nStarting data scraping ...")
 	data = get_data(driver, companyURL[:-4], 1, pages, [], True)
-	print "\nExporting data to " + companyName + ".json"
+	print ("\nExporting data to " + companyName + ".json")
 	json_export(data)
 	driver.quit()
 #endif
